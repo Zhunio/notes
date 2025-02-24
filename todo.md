@@ -5,9 +5,6 @@
 - [-] Debug JUnit application
 - [-] Try neotest
 - [-] Try vimtest
-
-# TODO (optional)
-
 - [-] Add Terminal to Neovim
   - [-] For starting angular application
   - [-] For starting springboot application
