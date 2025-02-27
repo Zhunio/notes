@@ -1,7 +1,6 @@
 # TODO
 
-- [x] Debug SpringBoot application 
-- [x] Debug JUnit application
-- [-] Try neotest
-- [-] Try vimtest
+- [-] Document: "Node.js: Attach to Process"
+- [-] Document: "Chrome: Launch to Debug URL"
+- [-] Document: "Java: Attach to Debug"
 
