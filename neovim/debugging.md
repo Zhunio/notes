@@ -23,17 +23,29 @@
 
 ### Node.js: Attach to Process
 
-1. Start node with the `inspect` or `inspect-brk` flags
-2. Start debugger by pressing: `<leader>dd`
-3. Choose `Node.js: Attach to Process`
+```lua
+{
+  type = "pwa-node",
+  request = "attach",
+  name = "Node.js: Attach to Process",
+  processId = require("dap.utils").pick_process,
+  cwd = "${workspaceFolder}",
+  sourceMaps = true,
+}
+```
 
-#### Debug Jest
+1. Start debugger by pressing: `<leader>dd`
+2. Choose `Node.js: Attach to Process`
 
-1. Start node with the `inspect` or `inspect-brk` flags
+## Usage
+
+### Jest
+
+1. Add the `test:debug` script to your `package.json`
 
 ```json
 "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand"
 ```
 
-2. Start debugger by pressing: `<leader>dd`
-3. Choose `Node.js: Attach to Process`
+2. Follow [Node.js: Attach to Process](#nodejs-attach-to-process)
+
