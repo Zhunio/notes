@@ -12,3 +12,19 @@
 { "<leader>to", function() require("neotest").output.open({ enter = true }) end },
 { "<leader>tp", function() require("neotest").output_panel.toggle() end },
 ```
+
+## Adapters
+
+```lua
+require("neotest").setup({
+  adapters = {
+    require("neotest-jest")({
+      jestCommand = "npm run test --",
+      env = { CI = true },
+      cwd = function()
+        return vim.fn.getcwd()
+      end,
+    }),
+  },
+})
+```
