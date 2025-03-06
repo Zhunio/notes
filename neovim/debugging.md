@@ -37,6 +37,54 @@
 1. Start debugger by pressing: `<leader>dd`
 2. Choose `Node.js: Attach to Process`
 
+### Chrome: Launch to Debug URL
+
+```lua
+{
+  type = "pwa-chrome",
+  request = "launch",
+  name = "Chrome: Launch to Debug URL",
+  url = function()
+    local co = coroutine.running()
+    return coroutine.create(function()
+      vim.ui.input({
+        prompt = "Enter URL: ",
+        default = "http://localhost:4200",
+      }, function(url)
+        if url == nil or url == "" then
+          return
+        else
+          coroutine.resume(co, url)
+        end
+      end)
+    end)
+  end,
+  webRoot = "${workspaceFolder}",
+  skipFiles = { "<node_internals>/**" },
+  protocol = "inspector",
+  sourceMaps = true,
+  userDataDir = false,
+}
+```
+
+1. Start debugger by pressing: `<leader>dd`
+2. Choose `Chrome: Launch to Debug URL`
+
+### Java: Attach to Debug
+
+```lua
+{
+  type = "java",
+  request = "attach",
+  name = "Java: Attach to Debug",
+  hostName = "127.0.0.1",
+  port = 5005,
+}
+```
+
+1. Start debugger by pressing: `<leader>dd`
+2. Choose `Java: Attach to Debug`
+
 ## Usage
 
 ### Jest
@@ -48,4 +96,3 @@
 ```
 
 2. Follow [Node.js: Attach to Process](#nodejs-attach-to-process)
-
