@@ -1,0 +1,7 @@
+# Install Certificate
+
+## Java
+
+```bash
+sudo keytool -import -alias <alias-name> -keystore $JAVA_HOME/lib/security/cacerts/lib/security/cacerts -file <path-to-cert>.pem
+```
