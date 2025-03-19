@@ -3,5 +3,5 @@
 ## Java
 
 ```bash
-sudo keytool -import -alias <alias-name> -keystore $JAVA_HOME/lib/security/cacerts -file <path-to-cert>.pem -storepass changeit
+keytool -import -alias <alias-name> -keystore $JAVA_HOME/lib/security/cacerts -file <path-to-cert>.pem -storepass changeit
 ```
