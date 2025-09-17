@@ -11,5 +11,7 @@
   - [Debugging](neovim/debugging.md)
   - [Finder](neovim/finder.md)
   - [Testing](neovim/testing.md)
+- Terraform
+  - [IAM User for Terraform](terraform/iam-user-for-terraform.md)
 - VPN
   - [Global Protect](vpn/global-protect.md)
