@@ -1,6 +1,6 @@
-# IAM User Setup for Terraform
+# Setup S3 Backend for Terraform
 
-This document describes the process for creating a dedicated IAM user for Terraform automation in any project.
+This guide will walk you through setting up an S3 backend for Terraform, including creating an IAM user with the necessary permissions.
 
 ## 1. Sign in to AWS Console
 
