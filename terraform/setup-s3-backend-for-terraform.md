@@ -34,6 +34,31 @@ This guide will walk you through setting up an S3 backend for Terraform, includi
 
 - Click **Create user**.
 
+## 4. Generate Access Keys
+
+- Click **Users** in the left sidebar.
+- Select the user you just created.
+- Go to the **Security credentials** tab.
+
+### Create access key
+
+- Click **Create access key**.
+- For "Use case", select **Command line interface (CLI)**.
+- (Optional) Add a description, e.g., `Terraform access key for <project-name>`.
+- Click **Create access key**.
+
+### Retrieve access key
+
+- Copy the **Access key** and **Secret access key**.
+- Store these credentials as environment variables in your **.zshrc**, **.bashrc**, **etc** files
+- You will needs these keys to run the Terraform's scripts
+
+```bash
+export AWS_ACCESS_KEY_ID=your-access-key-id
+export AWS_SECRET_ACCESS_KEY=your-secret-access-key
+export AWS_DEFAULT_REGION=us-east-1
+```
+
 ---
 
 **Resource naming:**
