@@ -147,6 +147,20 @@ terraform apply -auto-aprove    # approve
 ```terraform
 # infrastructure/main.tf
 #
+# Variable for the project name
+variable "project_name" {
+  description = "Name of the project for naming resources"
+  type        = string
+ default     = "<project-name>"
+}
+
+locals {
+  # Name of the S3 bucket to use for storing the terraform backend
+  backend_bucket_name = "terraform-backend-s3-${var.project_name}"
+  # Name of the DynamoDB table to use for locking the terraform state
+  backend_dynamodb_table_name = "terraform-backend-dynamodb-${var.project_name}"
+}
+
 # Configure the S3 backend for Terraform state
 terraform {
   # Define the S3 backend
