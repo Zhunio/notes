@@ -90,18 +90,24 @@ provider "aws" {
 resource "aws_s3_bucket" "terraform_state" {
   # Name of the S3 bucket to use for storing the terraform backend
   bucket = local.backend_bucket_name
+}
 
-  # Enable versioning to keep multiple variants of an object in the bucket
-  versioning {
-    enabled = true
+# Enable versioning to keep multiple variants of an object in the S3 bucket
+resource "aws_s3_bucket_versioning" "terraform_state" {
+  bucket = aws_s3_bucket.terraform_state.id
+
+  versioning_configuration {
+    status = "Enabled"
   }
+}
 
-  # Enable server-side encryption by default for all objects in the bucket
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+# Enable server-side encryption by default for all objects in the S3 bucket
+resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state" {
+  bucket = aws_s3_bucket.terraform_state.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
   }
 }
@@ -109,7 +115,7 @@ resource "aws_s3_bucket" "terraform_state" {
 # Create DynamoDB table for locking the terraform state
 resource "aws_dynamodb_table" "terraform_locks" {
   # Name of the DynamoDB table, provided via variables.tf
-  name         = var.backend_dynamodb_table_name
+  name         = local.backend_dynamodb_table_name
 
   # Use on-demand billing (no need to specify read/write capacity)
   billing_mode = "PAY_PER_REQUEST"
@@ -128,9 +134,10 @@ resource "aws_dynamodb_table" "terraform_locks" {
 #### 3. Execute backend terraform script
 
 ```sh
-cd infrastructure/backend   # navigate to infrastructure/backend
-terraform init              # initialize terraform
-terraform apply             # review and approve the plan
+cd infrastructure/backend       # navigate to infrastructure/backend
+terraform init                  # initialize terraform
+terraform plan                  # review the terraform plan
+terraform apply -auto-aprove    # approve
 ```
 
 ### Configure Terraform Backend
