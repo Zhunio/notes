@@ -145,7 +145,7 @@ terraform apply -auto-aprove    # approve
 #### 1. After resources are created, update your main Terraform configuration to use the backend:
 
 ```terraform
-# infrasture/main.tf
+# infrastructure/main.tf
 #
 # Configure the S3 backend for Terraform state
 terraform {
