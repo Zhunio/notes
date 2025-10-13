@@ -64,7 +64,7 @@ sample-project
 #### 2. Create S3 bucket and DynamoDB table for terraform backend
 
 ```terraform
-# infrastructure/backend-setup/main.tf
+# infrastructure/backend/main.tf
 #
 # Variable for the project name
 variable "project_name" {
