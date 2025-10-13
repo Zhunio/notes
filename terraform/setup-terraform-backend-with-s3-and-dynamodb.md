@@ -68,9 +68,10 @@ sample-project
 #
 # Variable for the project name
 variable "project_name" {
- description = "Name of the project for naming resources"
- type        = string
- default     = "<project-name>"
+  description = "Name of the project for naming resources"
+  type        = string
+  # 💀 Define the <project-name>
+  default = "<project-name>"
 }
 
 locals {
@@ -115,13 +116,13 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state" 
 # Create DynamoDB table for locking the terraform state
 resource "aws_dynamodb_table" "terraform_locks" {
   # Name of the DynamoDB table, provided via variables.tf
-  name         = local.backend_dynamodb_table_name
+  name = local.backend_dynamodb_table_name
 
   # Use on-demand billing (no need to specify read/write capacity)
   billing_mode = "PAY_PER_REQUEST"
 
   # Primary key for the table
-  hash_key     = "LockID"
+  hash_key = "LockID"
 
   # Define the primary key attribute
   attribute {
