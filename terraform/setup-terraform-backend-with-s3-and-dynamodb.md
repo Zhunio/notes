@@ -152,7 +152,8 @@ terraform apply -auto-aprove    # approve
 variable "project_name" {
   description = "Name of the project for naming resources"
   type        = string
- default     = "<project-name>"
+  # 💀 Define the <project-name>
+  default = "<project-name>"
 }
 
 locals {
@@ -167,17 +168,18 @@ terraform {
   # Define the S3 backend
   backend "s3" {
     # Name of the S3 bucket to store the state file
-    bucket         = var.backend_bucket_name
+    bucket = var.backend_bucket_name
     # Path within the bucket for the state file
-    key            = "global/s3/terraform.tfstate"
+    key = "global/s3/terraform.tfstate"
     # AWS region where the bucket is located
-    region         = "us-east-1"
+    region = "us-east-1"
     # DynamoDB table used for state locking and consistency
     dynamodb_table = var.backend_dynamodb_table_name
     # Ensures the state file is encrypted at rest
-    encrypt        = true
+    encrypt = true
   }
 }
+
 ```
 
 #### 2. Initialize Terraform to use the new backend:
