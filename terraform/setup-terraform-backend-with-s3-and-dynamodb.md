@@ -166,5 +166,8 @@ terraform init
 - Project Name: `<project-name>`
 - Terraform Backend Resources:
   - IAM User: `terraform-<project-name>`
+    - Policies:
+      - `AmazonS3FullAccess`
+      - `AmazonDynamoDBFullAccess`
   - S3 Bucket: `terraform-<project-name>-backend-bucket`
   - DynamoDB Table: `terraform-<project-name>-backend-dynamodb`
