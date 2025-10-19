@@ -127,8 +127,6 @@ resource "aws_dynamodb_table" "backend_dynamodb" {
 
 ```sh
 cd infrastructure/backend       # navigate to infrastructure/backend
-terraform init                  # initialize terraform
-terraform plan                  # review the terraform plan
 terraform apply -auto-aprove    # approve
 ```
 
