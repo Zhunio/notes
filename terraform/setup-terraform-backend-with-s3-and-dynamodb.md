@@ -65,37 +65,29 @@ sample-project
 
 ```terraform
 # infrastructure/backend/main.tf
-#
-# Variable for the project name
-variable "project_name" {
-  description = "Name of the project for naming resources"
-  type        = string
-  # 💀 Define the <project-name>
-  default = "<project-name>"
-}
 
 locals {
+  # 💀 Replace <project-name> with your project name
+  project_name = "<project-name>"
   # Name of the S3 bucket to use for storing the terraform backend
-  backend_bucket_name = "terraform-backend-s3-${var.project_name}"
+  backend_bucket_name = "terraform-${local.project_name}-backend-bucket"
   # Name of the DynamoDB table to use for locking the terraform state
-  backend_dynamodb_table_name = "terraform-backend-dynamodb-${var.project_name}"
+  backend_dynamodb_table_name = "terraform-${local.project_name}-backend-dynamodb"
 }
 
-# Configure the AWS provider
 provider "aws" {
   # AWS region to create resources in
   region = "us-east-1"
 }
 
 # Create S3 bucket for storing the terraform backend
-resource "aws_s3_bucket" "terraform_state" {
-  # Name of the S3 bucket to use for storing the terraform backend
+resource "aws_s3_bucket" "backend_bucket" {
   bucket = local.backend_bucket_name
 }
 
 # Enable versioning to keep multiple variants of an object in the S3 bucket
-resource "aws_s3_bucket_versioning" "terraform_state" {
-  bucket = aws_s3_bucket.terraform_state.id
+resource "aws_s3_bucket_versioning" "backend_bucket_versioning" {
+  bucket = aws_s3_bucket.backend_bucket.id
 
   versioning_configuration {
     status = "Enabled"
@@ -103,8 +95,8 @@ resource "aws_s3_bucket_versioning" "terraform_state" {
 }
 
 # Enable server-side encryption by default for all objects in the S3 bucket
-resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state" {
-  bucket = aws_s3_bucket.terraform_state.id
+resource "aws_s3_bucket_server_side_encryption_configuration" "backend_bucket_encryption" {
+  bucket = aws_s3_bucket.backend_bucket.id
 
   rule {
     apply_server_side_encryption_by_default {
@@ -114,8 +106,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state" 
 }
 
 # Create DynamoDB table for locking the terraform state
-resource "aws_dynamodb_table" "terraform_locks" {
-  # Name of the DynamoDB table, provided via variables.tf
+resource "aws_dynamodb_table" "backend_dynamodb" {
   name = local.backend_dynamodb_table_name
 
   # Use on-demand billing (no need to specify read/write capacity)
@@ -153,13 +144,13 @@ terraform {
   # Define the S3 backend
   backend "s3" {
     # 💀 Name of the S3 bucket to store the state file
-    bucket = "terraform-backend-s3-<project-name>"
+    bucket = "terraform-<project-name>-backend-bucket"
     # Path within the bucket for the state file
     key = "global/s3/terraform.tfstate"
     # AWS region where the bucket is located
     region = "us-east-1"
     # 💀 DynamoDB table used for state locking and consistency
-    dynamodb_table = "terraform-backend-dynamodb-<project-name>"
+    dynamodb_table = "terraform-<project-name>-backend-dynamodb"
     # Ensures the state file is encrypted at rest
     encrypt = true
   }
@@ -177,5 +168,5 @@ terraform init
 - Project Name: `<project-name>`
 - Terraform Backend Resources:
   - IAM User: `terraform-<project-name>`
-  - S3 Bucket: `terraform-backend-s3-<project-name>`
-  - DynamoDB Table: `terraform-backend-dynamodb-<project-name>`
+  - S3 Bucket: `terraform-<project-name>-backend-bucket`
+  - DynamoDB Table: `terraform-<project-name>-backend-dynamodb`
