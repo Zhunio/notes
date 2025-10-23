@@ -2,51 +2,9 @@
 
 This guide will walk you through setting up a Terraform backend using AWS S3 and DynamoDB for state management and locking.
 
-## Overview
+## Prequisites
 
-- [Create New IAM User](#create-new-iam-user)
-- [Create infrastructure using Terraform](#create-infrastructure-using-terraform)
-- [Configure Terraform Backend](#configure-terraform-backend)
-
-## Create New IAM User
-
-- Sign in to AWS Console
-  - Go to [AWS Console](https://console.aws.amazon.com/) and log in with an account that has IAM privileges
-- Navigate to IAM
-  - In the AWS Console, search for **IAM** and select it
-  - Click **Users** in the left sidebar
-  - Click **Create user**
-    - _Step 1: Specific user details_
-      - **User name:** `terraform-<project-name>`
-      - Click **Next**
-    - _Step 2: Set permissions_
-      - Choose **Attach policies directly**
-      - Search for and select:
-        - `AmazonS3FullAccess`
-        - `AmazonDynamoDBFullAccess`
-        - (Add or remove policies as needed for your project)
-      - Click **Next**
-    - _Step 3: Review an create_
-      - Click **Create user**
-    - _Step 4: Generate Access Keys_
-      - Click **Users** in the left sidebar
-      - Select the user you just created
-      - Go to the **Security credentials** tab
-    - _Step 5: Create access key_
-      - Click **Create access key**
-      - For "Use case", select **Command line interface (CLI)**
-      - (Optional) Add a description, e.g. `Terraform access key for <project-name>`
-      - Click **Create access key**
-    - _Step 6: Retrieve access key_
-      - Copy the **Access key** and **Secret access key**
-      - Store these credentials as environment variables in your **.zshrc**, **.bashrc**, **etc** files
-
-```sh
-# .zshrc
-export AWS_ACCESS_KEY_ID=your-access-key-id
-export AWS_SECRET_ACCESS_KEY=your-secret-access-key
-export AWS_DEFAULT_REGION=us-east-#
-```
+- [Setup IAM User for Terraform](setup-terraform-iam-user.md)
 
 ## Create infrastructure using Terraform
 
@@ -55,9 +13,8 @@ export AWS_DEFAULT_REGION=us-east-#
 ```sh
 sample-project
 ├─ infrastructure        # code for infrastructure
-│  ├─ backend            # code to create backend
-│  │  └─ main.tf
-│  └─ main.tf
+│  └─ backend            # code to create backend
+│     └─ main.tf
 └─ ... other files
 ```
 
@@ -66,13 +23,18 @@ sample-project
 ```terraform
 # infrastructure/backend/main.tf
 
+# 💀 1. Set the terraform project name
+variable "project_name" {
+  description = "Name of the project"
+  type        = string
+  default     = "tax-report"
+}
+
 locals {
-  # 💀 Replace <project-name> with your project name
-  project_name = "<project-name>"
   # Name of the S3 bucket to use for storing the terraform backend
-  backend_bucket_name = "terraform-${local.project_name}-backend-bucket"
+  backend_bucket_name = "terraform-${var.project_name}-backend-bucket"
   # Name of the DynamoDB table to use for locking the terraform state
-  backend_dynamodb_table_name = "terraform-${local.project_name}-backend-dynamodb"
+  backend_dynamodb_table_name = "terraform-${var.project_name}-backend-dynamodb"
 }
 
 provider "aws" {
@@ -130,38 +92,14 @@ cd infrastructure/backend       # navigate to infrastructure/backend
 terraform apply -auto-aprove    # approve
 ```
 
-### Configure Terraform Backend
-
-#### 1. After resources are created, update your main Terraform configuration to use the backend:
-
-```terraform
-# infrastructure/main.tf
-#
-# Configure the S3 backend for Terraform state
-terraform {
-  # Define the S3 backend
-  backend "s3" {
-    # 💀 Name of the S3 bucket to store the state file
-    bucket = "terraform-<project-name>-backend-bucket"
-    # Path within the bucket for the state file
-    key = "global/s3/terraform.tfstate"
-    # AWS region where the bucket is located
-    region = "us-east-1"
-    # 💀 DynamoDB table used for state locking and consistency
-    dynamodb_table = "terraform-<project-name>-backend-dynamodb"
-    # Ensures the state file is encrypted at rest
-    encrypt = true
-  }
-}
-```
-
-#### 2. Initialize Terraform to use the new backend:
+## Destroy infrastructure
 
 ```sh
-terraform init
+cd infrastructure/backend       # navigate to infrastructure/backend
+terraform destroy -auto-aprove  # approve
 ```
 
-**Resource naming:**
+## Resource naming
 
 - Project Name: `<project-name>`
 - Terraform Backend Resources:
